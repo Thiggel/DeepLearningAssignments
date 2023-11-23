@@ -6,7 +6,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=18
 #SBATCH --time=04:00:00
-#SBATCH --output=slurm_output_%A.out
+#SBATCH --output=CLIPVP.out
 
 module purge
 module load 2022
@@ -25,7 +25,7 @@ epochs=20
 
 ## Set of experiments on CIFAR-10
 dataset="cifar10"
-root=/scratch/$USER
+root=/scratch-local/$USER
 mkdir -p $root
 
 datasets=(cifar10)
