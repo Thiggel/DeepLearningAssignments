@@ -175,6 +175,7 @@ def evaluate_model(model, data_loader, device):
     return accuracy
 
 
+
 def main(lr, batch_size, epochs, data_dir, seed, augmentation_name, test_noise):
     """
     Main function for training and testing the model.
@@ -203,7 +204,7 @@ def main(lr, batch_size, epochs, data_dir, seed, augmentation_name, test_noise):
     
 
     # Train the model
-    model = train_model(model, lr, batch_size, epochs, data_dir, augmentation_name, device)
+    model = train_model(model, lr, batch_size, epochs, data_dir, 'checkpoint.pt', device)
 
     # Evaluate the model on the test set
     test_set = get_test_set(data_dir)
@@ -214,7 +215,6 @@ def main(lr, batch_size, epochs, data_dir, seed, augmentation_name, test_noise):
     #######################
     # END OF YOUR CODE    #
     #######################
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
