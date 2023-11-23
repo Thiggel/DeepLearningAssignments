@@ -170,8 +170,16 @@ class ZeroshotCLIP(nn.Module):
         # - Read the CLIP API documentation for more details:
         #   https://github.com/openai/CLIP#api
 
-        # remove this line once you implement the function
-        raise NotImplementedError("Implement the precompute_text_features function.")
+        clip_model.eval()
+
+        text_tokens = clip.tokenize(prompts)
+
+        with torch.no_grad():
+            text_encodings = clip_model.encode_text(text_tokens)
+
+        text_encodings /= text_encodings.norm(dim=-1, keepdim=True)
+
+        return text_encodings
 
         #######################
         # END OF YOUR CODE    #
@@ -209,8 +217,13 @@ class ZeroshotCLIP(nn.Module):
         # - Read the CLIP API documentation for more details:
         #   https://github.com/openai/CLIP#api
 
+        image_features = self.clip_model.encode_image(image)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ self.text_features.T).softmax(dim=-1)
+        similarity *= self.logit_scale
+
         # remove this line once you implement the function
-        raise NotImplementedError("Implement the model_inference function.")
+        return similarity
 
         #######################
         # END OF YOUR CODE    #
@@ -371,8 +384,11 @@ def main():
     # - Updating the accuracy meter is as simple as calling top1.update(accuracy, batch_size)
     # - You can use the model_inference method of the ZeroshotCLIP class to get the logits
 
-    # you can remove the following line once you have implemented the inference loop
-    raise NotImplementedError("Implement the inference loop")
+    for images, targets in loader:
+        logits = clipzs.model_inference(images.to(device))
+        accuracy = logits.argmax(dim=1).eq(targets).float().mean()
+        top1.update(accuracy, args.batch_size)
+
 
     #######################
     # END OF YOUR CODE    #
