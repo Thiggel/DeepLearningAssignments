@@ -207,7 +207,7 @@ def main(lr, batch_size, epochs, data_dir, seed, augmentation_name, test_noise):
     model = train_model(model, lr, batch_size, epochs, data_dir, 'checkpoint.pt', device)
 
     # Evaluate the model on the test set
-    test_set = get_test_set(data_dir)
+    test_set = get_test_set(data_dir, test_noise)
     test_set = data.DataLoader(test_set, batch_size=batch_size, shuffle=False)
     test_accuracy = evaluate_model(model, test_set, device)
     print("Test Accuracy: {:.2f}%".format(test_accuracy))
