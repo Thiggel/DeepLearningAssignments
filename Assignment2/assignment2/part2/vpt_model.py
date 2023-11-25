@@ -84,7 +84,7 @@ class VisualPromptCLIP(nn.Module):
 
         clip_model.eval()
 
-        text_tokens = clip.tokenize(prompts)
+        text_tokens = clip.tokenize(prompts).to(args.device)
 
         with torch.no_grad():
             text_features = clip_model.encode_text(text_tokens)

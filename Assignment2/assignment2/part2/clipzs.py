@@ -172,7 +172,7 @@ class ZeroshotCLIP(nn.Module):
 
         clip_model.eval()
 
-        text_tokens = clip.tokenize(prompts)
+        text_tokens = clip.tokenize(prompts).to(device)
 
         with torch.no_grad():
             text_encodings = clip_model.encode_text(text_tokens)
@@ -217,7 +217,9 @@ class ZeroshotCLIP(nn.Module):
         # - Read the CLIP API documentation for more details:
         #   https://github.com/openai/CLIP#api
 
-        image_features = self.clip_model.encode_image(image)
+        with torch.no_grad():
+            image_features = self.clip_model.encode_image(image)
+
         image_features /= image_features.norm(dim=-1, keepdim=True)
         similarity = (100.0 * image_features @ self.text_features.T).softmax(dim=-1)
         similarity *= self.logit_scale
@@ -386,9 +388,8 @@ def main():
 
     for images, targets in loader:
         logits = clipzs.model_inference(images.to(device))
-        accuracy = logits.argmax(dim=1).eq(targets).float().mean()
+        accuracy = logits.argmax(dim=1).eq(targets.to(device)).float().mean()
         top1.update(accuracy, args.batch_size)
-
 
     #######################
     # END OF YOUR CODE    #

@@ -66,7 +66,7 @@ class DeepPromptCLIP(nn.Module):
 
         clip_model.eval()
 
-        text_tokens = clip.tokenize(prompts)
+        text_tokens = clip.tokenize(prompts).to(args.device)
 
         with torch.no_grad():
             text_features = clip_model.encode_text(text_tokens)
@@ -90,7 +90,7 @@ class DeepPromptCLIP(nn.Module):
         # TODO: Initialize the learnable deep prompt.
         # Hint: consider the shape required for the deep prompt to be compatible with the CLIP model 
 
-        self.deep_prompt = nn.Parameter(torch.randn(1, self.clip_model.visual[self.injection_layer].out_features))
+        self.deep_prompt = nn.Parameter(torch.randn(1, list(self.clip_model.visual.children)[self.injection_layer].out_features))
 
         #######################
         # END OF YOUR CODE    #
@@ -154,8 +154,8 @@ class DeepPromptCLIP(nn.Module):
 
         # Hint: Beware of the batch size (the deep prompt is the same for all images in the batch).
 
-        for block in image_encoder.transformer.resblocks:
-            if block == self.injection_layer:
+        for (block_idx, block) in enumerate(image_encoder.transformer.resblocks):
+            if block_idx == self.injection_layer:
                 x = x + self.deep_prompt
             x = block(x)
 

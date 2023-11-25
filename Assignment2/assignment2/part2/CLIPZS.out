@@ -13,10 +13,9 @@ the 'module load <package__name>' command. If you are uncertain if a package is
 already available 
 on the system, please use 'module avail' or 'module spider' to search for it.
 ============================================================================================== 
-mkdir: cannot create directory '/scratch': Permission denied
 Collecting git+https://github.com/openai/CLIP.git
-  Cloning https://github.com/openai/CLIP.git to /gpfs/scratch1/nodespecific/gcn32/scur1188.4508658/pip-req-build-_6te_5ql
-  Running command git clone --filter=blob:none --quiet https://github.com/openai/CLIP.git /gpfs/scratch1/nodespecific/gcn32/scur1188.4508658/pip-req-build-_6te_5ql
+  Cloning https://github.com/openai/CLIP.git to /gpfs/scratch1/nodespecific/gcn12/scur1188.4521061/pip-req-build-fkkkdz3j
+  Running command git clone --filter=blob:none --quiet https://github.com/openai/CLIP.git /gpfs/scratch1/nodespecific/gcn12/scur1188.4521061/pip-req-build-fkkkdz3j
   Resolved https://github.com/openai/CLIP.git to commit a1d071733d7111c9c014f024669f959182114e33
   Preparing metadata (setup.py): started
   Preparing metadata (setup.py): finished with status 'done'
@@ -41,39 +40,49 @@ Requirement already satisfied: idna<4,>=2.5 in /home/scur1188/.conda/envs/dl2023
 Requirement already satisfied: urllib3<3,>=1.21.1 in /home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages (from requests->torchvision->clip==1.0) (2.1.0)
 Requirement already satisfied: certifi>=2017.4.17 in /home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages (from requests->torchvision->clip==1.0) (2023.11.17)
 Requirement already satisfied: mpmath>=0.19 in /home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages (from sympy->torch->clip==1.0) (1.3.0)
-  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  5%|██                                     | 18.1M/338M [00:00<00:01, 190MiB/s] 11%|████▏                                  | 36.2M/338M [00:00<00:01, 158MiB/s] 15%|█████▉                                 | 51.6M/338M [00:00<00:01, 152MiB/s] 20%|███████▉                               | 68.6M/338M [00:00<00:01, 161MiB/s] 25%|█████████▋                             | 84.2M/338M [00:00<00:01, 159MiB/s] 30%|████████████                            | 101M/338M [00:00<00:01, 166MiB/s] 35%|█████████████▉                          | 117M/338M [00:00<00:01, 150MiB/s] 39%|███████████████▋                        | 132M/338M [00:00<00:01, 126MiB/s] 43%|█████████████████▎                      | 146M/338M [00:01<00:01, 132MiB/s] 48%|███████████████████▎                    | 163M/338M [00:01<00:01, 140MiB/s] 53%|█████████████████████                   | 177M/338M [00:01<00:01, 132MiB/s] 58%|███████████████████████▏                | 195M/338M [00:01<00:01, 146MiB/s] 64%|█████████████████████████▍              | 215M/338M [00:01<00:00, 162MiB/s] 69%|███████████████████████████▌            | 232M/338M [00:01<00:00, 168MiB/s] 74%|█████████████████████████████▌          | 249M/338M [00:01<00:00, 170MiB/s] 79%|███████████████████████████████▌        | 266M/338M [00:01<00:00, 170MiB/s] 84%|█████████████████████████████████▍      | 282M/338M [00:01<00:00, 164MiB/s] 88%|███████████████████████████████████▎    | 298M/338M [00:02<00:00, 147MiB/s] 93%|█████████████████████████████████████▎  | 315M/338M [00:02<00:00, 152MiB/s] 98%|███████████████████████████████████████ | 330M/338M [00:02<00:00, 148MiB/s]100%|████████████████████████████████████████| 338M/338M [00:02<00:00, 153MiB/s]
+Downloading https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz to /scratch-local/scur1188/cifar-10-python.tar.gz
+  0%|          | 0/170498071 [00:00<?, ?it/s]  0%|          | 65536/170498071 [00:00<07:15, 391273.02it/s]  0%|          | 229376/170498071 [00:00<03:55, 724442.79it/s]  1%|          | 917504/170498071 [00:00<01:16, 2226515.75it/s]  2%|▏         | 2588672/170498071 [00:00<00:27, 6204382.06it/s]  4%|▎         | 6258688/170498071 [00:00<00:11, 14731764.00it/s]  6%|▌         | 9863168/170498071 [00:00<00:07, 20826158.64it/s]  8%|▊         | 13926400/170498071 [00:00<00:06, 23309081.19it/s] 11%|█         | 18284544/170498071 [00:01<00:05, 28711605.00it/s] 13%|█▎        | 21921792/170498071 [00:01<00:04, 30391836.34it/s] 15%|█▌        | 25886720/170498071 [00:01<00:04, 32961786.12it/s] 17%|█▋        | 29818880/170498071 [00:01<00:04, 34753027.38it/s] 20%|█▉        | 33423360/170498071 [00:01<00:04, 31442450.58it/s] 22%|██▏       | 37158912/170498071 [00:01<00:04, 33009974.64it/s] 24%|██▍       | 40599552/170498071 [00:01<00:03, 32523089.65it/s] 26%|██▌       | 43974656/170498071 [00:01<00:03, 32849710.39it/s] 28%|██▊       | 47316992/170498071 [00:01<00:03, 32855904.11it/s] 30%|██▉       | 51019776/170498071 [00:02<00:03, 34003359.66it/s] 32%|███▏      | 54460416/170498071 [00:02<00:03, 31494336.02it/s] 34%|███▍      | 57933824/170498071 [00:02<00:03, 32386435.14it/s] 36%|███▌      | 61243392/170498071 [00:02<00:03, 32306496.91it/s] 38%|███▊      | 64815104/170498071 [00:02<00:03, 32383238.82it/s] 40%|███▉      | 68124672/170498071 [00:02<00:03, 32576125.39it/s] 42%|████▏     | 71598080/170498071 [00:02<00:02, 33195026.66it/s] 44%|████▍     | 74940416/170498071 [00:02<00:02, 33192405.12it/s] 46%|████▌     | 78282752/170498071 [00:02<00:02, 31381535.49it/s] 48%|████▊     | 81592320/170498071 [00:02<00:02, 31867045.63it/s] 50%|████▉     | 85098496/170498071 [00:03<00:02, 32762069.13it/s] 52%|█████▏    | 88408064/170498071 [00:03<00:02, 32477860.72it/s] 54%|█████▍    | 91815936/170498071 [00:03<00:02, 32185529.77it/s] 56%|█████▌    | 95191040/170498071 [00:03<00:02, 32560469.79it/s] 58%|█████▊    | 98697216/170498071 [00:03<00:02, 33240253.58it/s] 60%|█████▉    | 102039552/170498071 [00:03<00:02, 32949438.25it/s] 62%|██████▏   | 105349120/170498071 [00:03<00:02, 31408620.04it/s] 64%|██████▎   | 108625920/170498071 [00:03<00:01, 31782243.16it/s] 66%|██████▌   | 112787456/170498071 [00:03<00:01, 32833437.16it/s] 69%|██████▊   | 117145600/170498071 [00:04<00:01, 35856284.23it/s] 71%|███████   | 120782848/170498071 [00:04<00:01, 32679161.43it/s] 73%|███████▎  | 124485632/170498071 [00:04<00:01, 33836172.87it/s] 75%|███████▌  | 128647168/170498071 [00:04<00:01, 34603228.01it/s] 78%|███████▊  | 132481024/170498071 [00:04<00:01, 35577760.03it/s] 80%|████████  | 136642560/170498071 [00:04<00:01, 33349549.14it/s] 83%|████████▎ | 141000704/170498071 [00:04<00:00, 36055326.86it/s] 85%|████████▍ | 144736256/170498071 [00:04<00:00, 35114989.76it/s] 87%|████████▋ | 149061632/170498071 [00:04<00:00, 37332664.66it/s] 90%|████████▉ | 152862720/170498071 [00:05<00:00, 33228032.43it/s] 92%|█████████▏| 157122560/170498071 [00:05<00:00, 35672357.89it/s] 94%|█████████▍| 160825344/170498071 [00:05<00:00, 34826764.70it/s] 97%|█████████▋| 165183488/170498071 [00:05<00:00, 37208875.50it/s] 99%|█████████▉| 168984576/170498071 [00:05<00:00, 33380950.74it/s]100%|██████████| 170498071/170498071 [00:05<00:00, 30576413.94it/s]
+Extracting /scratch-local/scur1188/cifar-10-python.tar.gz to /scratch-local/scur1188
+Using prompt template: This is a photo of a {}
+Using device: cuda
+Loading CLIP (backbone: ViT-B/32)
+  0%|                                               | 0.00/338M [00:00<?, ?iB/s]  1%|▌                                     | 4.50M/338M [00:00<00:07, 46.0MiB/s]  3%|█                                     | 9.02M/338M [00:00<00:07, 46.8MiB/s]  4%|█▋                                    | 14.6M/338M [00:00<00:06, 51.6MiB/s]  6%|██▏                                   | 19.6M/338M [00:00<00:06, 51.6MiB/s]  8%|██▊                                   | 25.4M/338M [00:00<00:05, 54.6MiB/s]  9%|███▌                                  | 31.6M/338M [00:00<00:05, 58.1MiB/s] 11%|████▏                                 | 37.2M/338M [00:00<00:08, 37.5MiB/s] 13%|████▊                                 | 42.9M/338M [00:00<00:07, 42.6MiB/s] 14%|█████▍                                | 48.8M/338M [00:01<00:06, 47.3MiB/s] 16%|██████▏                               | 54.5M/338M [00:01<00:05, 50.6MiB/s] 18%|██████▋                               | 59.8M/338M [00:01<00:06, 48.0MiB/s] 19%|███████▍                              | 65.6M/338M [00:01<00:05, 51.2MiB/s] 21%|███████▉                              | 70.8M/338M [00:01<00:05, 52.0MiB/s] 23%|████████▌                             | 76.0M/338M [00:01<00:05, 52.6MiB/s] 24%|█████████▏                            | 81.9M/338M [00:01<00:04, 55.0MiB/s] 26%|█████████▊                            | 87.4M/338M [00:01<00:04, 55.9MiB/s] 28%|██████████▍                           | 93.0M/338M [00:01<00:04, 56.4MiB/s] 29%|███████████                           | 98.5M/338M [00:02<00:04, 56.3MiB/s] 31%|███████████▉                           | 104M/338M [00:02<00:04, 54.9MiB/s] 32%|████████████▌                          | 109M/338M [00:02<00:04, 53.9MiB/s] 34%|█████████████▎                         | 115M/338M [00:02<00:04, 53.6MiB/s] 36%|█████████████▊                         | 120M/338M [00:02<00:04, 49.0MiB/s] 37%|██████████████▌                        | 126M/338M [00:02<00:04, 53.0MiB/s] 39%|███████████████▏                       | 132M/338M [00:02<00:03, 55.2MiB/s] 41%|███████████████▉                       | 138M/338M [00:02<00:03, 57.6MiB/s] 43%|████████████████▌                      | 144M/338M [00:02<00:03, 58.6MiB/s] 44%|█████████████████▎                     | 149M/338M [00:02<00:03, 58.6MiB/s] 46%|█████████████████▉                     | 155M/338M [00:03<00:03, 59.3MiB/s] 48%|██████████████████▋                    | 161M/338M [00:03<00:03, 60.1MiB/s] 49%|███████████████████▎                   | 167M/338M [00:03<00:02, 60.2MiB/s] 51%|███████████████████▉                   | 173M/338M [00:03<00:02, 59.2MiB/s] 53%|████████████████████▋                  | 179M/338M [00:03<00:02, 59.7MiB/s] 55%|█████████████████████▎                 | 185M/338M [00:03<00:02, 60.7MiB/s] 56%|██████████████████████                 | 190M/338M [00:03<00:02, 60.2MiB/s] 58%|██████████████████████▋                | 196M/338M [00:03<00:02, 57.8MiB/s] 60%|███████████████████████▎               | 202M/338M [00:03<00:02, 58.8MiB/s] 62%|████████████████████████               | 208M/338M [00:04<00:02, 58.7MiB/s] 65%|█████████████████████████▏             | 218M/338M [00:04<00:01, 72.5MiB/s] 67%|█████████████████████████▉             | 225M/338M [00:04<00:01, 67.0MiB/s] 69%|██████████████████████████▋            | 231M/338M [00:04<00:01, 65.9MiB/s] 70%|███████████████████████████▍           | 238M/338M [00:04<00:01, 66.4MiB/s] 72%|████████████████████████████▏          | 244M/338M [00:04<00:01, 62.5MiB/s] 74%|████████████████████████████▉          | 250M/338M [00:04<00:01, 60.0MiB/s] 76%|█████████████████████████████▌         | 256M/338M [00:04<00:01, 60.1MiB/s] 78%|██████████████████████████████▎        | 262M/338M [00:04<00:01, 60.1MiB/s] 79%|██████████████████████████████▉        | 268M/338M [00:04<00:01, 59.0MiB/s] 81%|███████████████████████████████▌       | 273M/338M [00:05<00:01, 59.2MiB/s] 83%|████████████████████████████████▎      | 280M/338M [00:05<00:01, 60.7MiB/s] 85%|████████████████████████████████▉      | 286M/338M [00:05<00:00, 60.6MiB/s] 87%|██████████████████████████████████     | 295M/338M [00:05<00:00, 73.0MiB/s] 90%|██████████████████████████████████▉    | 302M/338M [00:05<00:00, 63.2MiB/s] 91%|███████████████████████████████████▋   | 309M/338M [00:05<00:00, 56.9MiB/s] 93%|████████████████████████████████████▎  | 315M/338M [00:05<00:00, 58.3MiB/s] 95%|█████████████████████████████████████  | 321M/338M [00:05<00:00, 59.8MiB/s] 97%|█████████████████████████████████████▊ | 327M/338M [00:06<00:00, 61.0MiB/s] 99%|██████████████████████████████████████▍| 333M/338M [00:06<00:00, 60.3MiB/s]100%|███████████████████████████████████████| 338M/338M [00:06<00:00, 57.2MiB/s]
+
+
+List of prompts:
+['This is a photo of a airplane',
+ 'This is a photo of a automobile',
+ 'This is a photo of a bird',
+ 'This is a photo of a cat',
+ 'This is a photo of a deer',
+ 'This is a photo of a dog',
+ 'This is a photo of a frog',
+ 'This is a photo of a horse',
+ 'This is a photo of a ship',
+ 'This is a photo of a truck']
+Precomputing text features
+Iterating over test set of cifar10
+/home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages/torch/nn/modules/conv.py:456: UserWarning: Applied workaround for CuDNN issue, install nvrtc.so (Triggered internally at /opt/conda/conda-bld/pytorch_1695392026823/work/aten/src/ATen/native/cudnn/Conv_v8.cpp:80.)
+  return F.conv2d(input, weight, bias, self.stride,
 Traceback (most recent call last):
   File "/gpfs/home4/scur1188/DeepLearning/Assignment2/assignment2/part2/.//clipzs.py", line 403, in <module>
     main()
-  File "/gpfs/home4/scur1188/DeepLearning/Assignment2/assignment2/part2/.//clipzs.py", line 339, in main
-    dataset = load_dataset(args.dataset, args.root, args.split, preprocess)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/gpfs/home4/scur1188/DeepLearning/Assignment2/assignment2/part2/.//clipzs.py", line 271, in load_dataset
-    dataset = DATASET[dataset](
-              ^^^^^^^^^^^^^^^^^
-  File "/home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages/torchvision/datasets/cifar.py", line 65, in __init__
-    self.download()
-  File "/home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages/torchvision/datasets/cifar.py", line 139, in download
-    download_and_extract_archive(self.url, self.root, filename=self.filename, md5=self.tgz_md5)
-  File "/home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages/torchvision/datasets/utils.py", line 434, in download_and_extract_archive
-    download_url(url, download_root, filename, md5)
-  File "/home/scur1188/.conda/envs/dl2023/lib/python3.11/site-packages/torchvision/datasets/utils.py", line 123, in download_url
-    os.makedirs(root, exist_ok=True)
-  File "<frozen os>", line 215, in makedirs
-  File "<frozen os>", line 225, in makedirs
-PermissionError: [Errno 13] Permission denied: '/scratch'
+  File "/gpfs/home4/scur1188/DeepLearning/Assignment2/assignment2/part2/.//clipzs.py", line 389, in main
+    accuracy = logits.argmax(dim=1).eq(targets).float().mean()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
 
 JOB STATISTICS
 ==============
-Job ID: 4508658
+Job ID: 4521061
 Cluster: snellius
 User/Group: scur1188/scur1188
 State: RUNNING
 Nodes: 1
 Cores per node: 18
 CPU Utilized: 00:00:00
-CPU Efficiency: 0.00% of 00:09:00 core-walltime
-Job Wall-clock time: 00:00:30
+CPU Efficiency: 0.00% of 00:12:54 core-walltime
+Job Wall-clock time: 00:00:43
 Memory Utilized: 0.00 MB (estimated maximum)
 Memory Efficiency: 0.00% of 120.00 GB (120.00 GB/node)
 WARNING: Efficiency statistics may be misleading for RUNNING jobs.
