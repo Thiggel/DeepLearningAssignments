@@ -159,18 +159,17 @@ class Learner:
             is_best = acc1 > self.best_acc1
             self.best_acc1 = max(acc1, self.best_acc1)
 
-            save_checkpoint(
-                {
-                    "epoch": epoch + 1,
-                    "state_dict": self.clip.prompt_learner.state_dict() if self.args.prompt_type == "visual_prompt" else self.clip.state_dict(),
-                    "best_acc1": self.best_acc1,
-                    "optimizer": self.optimizer.state_dict(),
-                },
-                self.args,
-                is_best=is_best,
-            )
-
             if is_best:
+                save_checkpoint(
+                    {
+                        "epoch": epoch + 1,
+                        "state_dict": self.clip.prompt_learner.state_dict() if self.args.prompt_type == "visual_prompt" else self.clip.state_dict(),
+                        "best_acc1": self.best_acc1,
+                        "optimizer": self.optimizer.state_dict(),
+                    },
+                    self.args,
+                    is_best=is_best,
+                )
                 epochs_since_improvement = 0
             else:
                 epochs_since_improvement += 1
@@ -229,12 +228,13 @@ class Learner:
             # - Perform a backward pass
             # - Update the parameters
 
-            optimizer.zero_grad()
+            torch.autograd.set_detect_anomaly(True)
+            self.optimizer.zero_grad()
             images, target = images.to(self.device), target.to(self.device)
-            predictions = self.clip(images)
-            loss = self.criterion(predictions, target)
+            output = self.clip(images)
+            loss = self.criterion(output, target)
             loss.backward()
-            optimizer.step()
+            self.optimizer.step()
             #######################
             # END OF YOUR CODE    #
             #######################

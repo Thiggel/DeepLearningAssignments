@@ -66,10 +66,8 @@ class DeepPromptCLIP(nn.Module):
 
         clip_model.eval()
 
-        text_tokens = clip.tokenize(prompts).to(args.device)
-
         with torch.no_grad():
-            text_features = clip_model.encode_text(text_tokens)
+            text_features = clip_model.encode_text(prompts)
 
         text_features /= text_features.norm(dim=-1, keepdim=True)
 
@@ -89,8 +87,9 @@ class DeepPromptCLIP(nn.Module):
 
         # TODO: Initialize the learnable deep prompt.
         # Hint: consider the shape required for the deep prompt to be compatible with the CLIP model 
+        hidden_dim = self.clip_model.visual.transformer.width
 
-        self.deep_prompt = nn.Parameter(torch.randn(1, list(self.clip_model.visual.children)[self.injection_layer].out_features))
+        self.deep_prompt = nn.Parameter(torch.randn(1, hidden_dim, dtype=torch.float16))
 
         #######################
         # END OF YOUR CODE    #
@@ -113,12 +112,12 @@ class DeepPromptCLIP(nn.Module):
         # - You need to multiply the similarity logits with the logit scale (clip_model.logit_scale).
         # - Return logits of shape (batch size, number of classes).
 
-        image_features = custom_encode_image(image)
-        image_features /= image_features.norm(dim=-1, keepdim=True)
-        similarity = (100.0 * image_features @ self.text_features.T).softmax(dim=-1)
-        similarity *= self.logit_scale
+        image_features = self.custom_encode_image(image)
+        normed_image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * normed_image_features @ self.text_features.T).softmax(dim=-1)
+        logits = similarity * self.logit_scale
 
-        return similarity
+        return logits
 
         #######################
         # END OF YOUR CODE    #
@@ -156,7 +155,8 @@ class DeepPromptCLIP(nn.Module):
 
         for (block_idx, block) in enumerate(image_encoder.transformer.resblocks):
             if block_idx == self.injection_layer:
-                x = x + self.deep_prompt
+                repeated_deep_prompt = torch.tile(self.deep_prompt, (1, x.shape[1], 1))
+                x = torch.cat([x, repeated_deep_prompt], dim=0)
             x = block(x)
 
         #######################

@@ -62,7 +62,7 @@ class FixedPatchPrompter(nn.Module):
         #   your prompter does what you expect it to do.
 
         prompt = torch.zeros_like(x)
-        prompt[:, :, :self.prompt.size(3), :self.prompt.size(4)] = self.prompt
+        prompt[:, :, :self.prompt.shape[2], :self.prompt.shape[2]] = self.prompt
 
         return x + prompt
         #######################
@@ -110,10 +110,10 @@ class PadPrompter(nn.Module):
         #   your prompter does what you expect it to do.
 
         prompt = torch.zeros_like(x)
-        prompt[:, :, :self.pad_left.size(3), :self.pad_left.size(4)] = self.pad_left
-        prompt[:, :, -self.pad_right.size(3):, :self.pad_right.size(4)] = self.pad_right
-        prompt[:, :, :self.pad_up.size(3), -self.pad_up.size(4):] = self.pad_up
-        prompt[:, :, -self.pad_down.size(3):, -self.pad_down.size(4):] = self.pad_down
+        prompt[:, :, :self.pad_left.shape[2], :self.pad_left.shape[3]] = self.pad_left
+        prompt[:, :, -self.pad_right.shape[2]:, :self.pad_right.shape[3]] = self.pad_right
+        prompt[:, :, :self.pad_up.shape[2], -self.pad_up.shape[3]:] = self.pad_up
+        prompt[:, :, -self.pad_down.shape[2]:, -self.pad_down.shape[3]:] = self.pad_down
 
         return x + prompt
         #######################
