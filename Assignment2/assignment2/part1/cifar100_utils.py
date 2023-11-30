@@ -43,7 +43,6 @@ class AddGaussianNoise(torch.nn.Module):
         # END OF YOUR CODE    #
         #######################
 
-
 def add_augmentation(augmentation_name, transform_list):
     """
     Adds an augmentation transform to the list.
@@ -57,11 +56,11 @@ def add_augmentation(augmentation_name, transform_list):
     #######################
 
     # Create a new transformation based on the augmentation_name.
-    pass
-
+    if augmentation_name == 'HorizontalFlip':
     # Add the new transformation to the list.
-    pass
-
+        transform_list.append(transforms.RandomHorizontalFlip(p=0.5))
+    else:
+        print('augmentation name ', augmentation_name, ' not supported')
     #######################
     # END OF YOUR CODE    #
     #######################
@@ -132,7 +131,9 @@ def get_test_set(data_dir, test_noise):
                         transforms.ToTensor(),
                         transforms.Normalize(mean, std)]
     if test_noise:
-        add_augmentation('test_noise', test_transform)
+        print('Adding Test Noise')
+        test_transform.append(AddGaussianNoise())
+
     test_transform = transforms.Compose(test_transform)
 
     test_dataset = CIFAR100(root=data_dir, train=False, download=True, transform=test_transform)

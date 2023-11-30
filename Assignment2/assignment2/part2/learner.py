@@ -116,10 +116,12 @@ class Learner:
     def resume_checkpoint(self):
         """Resumes training from a checkpoint."""
 
-        if os.path.isfile(self.args.resume):
-            print("=> loading checkpoint '{}'".format(self.args.resume))
+        path = os.getcwd() + '/' + self.args.resume
+
+        if os.path.isfile(path):
+            print("=> loading checkpoint '{}'".format(path))
             if self.args.gpu is None:
-                checkpoint = torch.load(self.args.resume)
+                checkpoint = torch.load(path)
             else:
                 # Map model to be loaded to specified single gpu.
                 loc = "cuda:{}".format(self.args.gpu)
@@ -129,14 +131,15 @@ class Learner:
             if self.args.gpu is not None:
                 # best_acc1 may be from a checkpoint from a different GPU
                 best_acc1 = best_acc1.to(self.args.gpu)
-            self.clip.prompt_learner.load_state_dict(checkpoint["state_dict"])
+            if hasattr(self.clip, 'prompt_learner'):
+                self.clip.prompt_learner.load_state_dict(checkpoint["state_dict"])
             print(
                 "=> loaded checkpoint '{}' (epoch {})".format(
                     self.args.resume, checkpoint["epoch"]
                 )
             )
         else:
-            print("=> no checkpoint found at '{}'".format(self.args.resume))
+            print("=> no checkpoint found at '{}'".format(path))
 
     def reproduceability(self, args):
         """Fixes the seed for reproducibility."""

@@ -91,7 +91,7 @@ def train_model(model, lr, batch_size, epochs, data_dir, checkpoint_name, device
     #######################
 
     # Load the datasets
-    train_set, val_set = get_train_validation_set(data_dir)
+    train_set, val_set = get_train_validation_set(data_dir, augmentation_name=augmentation_name)
     train_set = data.DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_set = data.DataLoader(val_set, batch_size=batch_size, shuffle=False)
 
@@ -176,7 +176,7 @@ def evaluate_model(model, data_loader, device):
 
 
 
-def main(lr, batch_size, epochs, data_dir, seed, augmentation_name, test_noise):
+def main(lr, batch_size, epochs, data_dir, seed, augmentation_name, test_noise, evaluate):
     """
     Main function for training and testing the model.
 
@@ -201,10 +201,13 @@ def main(lr, batch_size, epochs, data_dir, seed, augmentation_name, test_noise):
     model = get_model()
 
     # Get the augmentation to use
-    
 
     # Train the model
-    model = train_model(model, lr, batch_size, epochs, data_dir, 'checkpoint.pt', device)
+    if not evaluate:
+        model = train_model(model, lr, batch_size, epochs, data_dir, 'checkpoint.pt', device, augmentation_name=augmentation_name)
+    else:
+        model.to(device)
+        model.load_state_dict(torch.load('checkpoint.pt'))
 
     # Evaluate the model on the test set
     test_set = get_test_set(data_dir, test_noise)
@@ -235,7 +238,10 @@ if __name__ == '__main__':
                         help='Augmentation to use.')
     parser.add_argument('--test_noise', default=False, action="store_true",
                         help='Whether to test the model on noisy images or not.')
+    parser.add_argument('--evaluate', default=False, action="store_true",
+                        help='Only evaluate the model')
 
     args = parser.parse_args()
+    print(args)
     kwargs = vars(args)
     main(**kwargs)

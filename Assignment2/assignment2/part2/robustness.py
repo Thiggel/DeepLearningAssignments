@@ -114,9 +114,6 @@ def parse_option():
 
     args = parser.parse_args()
 
-    args.prompt_type = 'deep_prompt'
-    args.injection_layer = 0
-
     args.filename = "{}_{}_{}_{}_{}_{}_lr_{}_decay_{}_bsz_{}_warmup_{}_trial_{}".format(
         args.method,
         args.prompt_size,
