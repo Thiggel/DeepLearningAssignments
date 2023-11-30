@@ -185,7 +185,7 @@ def main():
 
         # 5. Load the clip model
         print(f"Loading CLIP (backbone: {args.arch})")
-        clip_model = learn.vpt.load_clip_to_cpu(args)
+        clip_model = learn.clip.load_clip_to_cpu(args)
         clip_model.to(args.device)
         # Hack to make model as float() (This is a CLIP hack)
         if args.device == "cpu":
@@ -214,7 +214,7 @@ def main():
         #######################
 
         # 8. Set the text_features of pre-trained model to the calculated text features
-        learn.vpt.text_features = text_features
+        learn.clip.text_features = text_features
 
         # 9. Offset the target labels of CIFAR100 by 10
         #######################
@@ -224,7 +224,7 @@ def main():
         # That is, if a class in CIFAR100 corresponded to '4', it should now correspond to '14'
         # Set the result of this to the attribute cifar100_test.targets to override them
 
-        cifar100_test.targets = cifar100_test.targets + 10
+        cifar100_test.targets = list(map(lambda target: target + 10, cifar100_test.targets))
         #######################
         # END OF YOUR CODE    #
         #######################
