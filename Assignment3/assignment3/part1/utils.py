@@ -77,7 +77,7 @@ def elbo_to_bpd(elbo, img_shape):
     #######################
     # PUT YOUR CODE HERE  #
     #######################
-    bpd = elbo * torch.exp(torch.tensor(1)).log2() * 1 / np.prod(img_shape[1:])
+    bpd = elbo * torch.exp(torch.tensor(1)).log2() / np.prod(img_shape[1:])
     #######################
     # END OF YOUR CODE    #
     #######################

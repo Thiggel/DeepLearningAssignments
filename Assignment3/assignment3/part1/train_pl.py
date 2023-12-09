@@ -73,9 +73,23 @@ class VAE(pl.LightningModule):
         mean, log_std = self.encoder(imgs)
         z = sample_reparameterize(mean, log_std.exp())
         x_hat = self.decoder(z)
-        L_rec = F.cross_entropy(x_hat.flatten(2, 3), imgs.flatten(1, 3), reduction='sum') / imgs.shape[0]
+        L_rec = F.cross_entropy(x_hat, imgs.squeeze(), reduction='sum') / imgs.shape[0]
         L_reg = KLD(mean, log_std).mean()
         bpd = elbo_to_bpd(L_rec, imgs.shape)
+
+        from torchviz import make_dot
+        graph = make_dot(L_rec, params=dict(self.named_parameters()))
+        graph.render("computation_graph", format="png")
+        exit()
+
+        if torch.isnan(L_rec).any().item():
+            print('NAN!')
+            print('z', z)
+            print('is_nan x_hat', torch.isnan(x_hat).any().item())
+            print('is_nan imgs', torch.isnan(imgs).any().item())
+            print(imgs.shape)
+            exit()
+                
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -118,10 +132,10 @@ class VAE(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         # Make use of the forward function, and add logging statements
         L_rec, L_reg, bpd = self.forward(batch[0])
-        self.log("val_reconstruction_loss", L_rec)
-        self.log("val_regularization_loss", L_reg)
-        self.log("val_ELBO", L_rec + L_reg)
-        self.log("val_bpd", bpd)
+        self.log("val_reconstruction_loss", L_rec, prog_bar=True)
+        self.log("val_regularization_loss", L_reg, prog_bar=True)
+        self.log("val_ELBO", L_rec + L_reg, prog_bar=True)
+        self.log("val_bpd", bpd, prog_bar=True)
 
     def test_step(self, batch, batch_idx):
         # Make use of the forward function, and add logging statements

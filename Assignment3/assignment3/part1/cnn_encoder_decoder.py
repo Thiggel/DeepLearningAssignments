@@ -74,8 +74,6 @@ class CNNEncoder(nn.Module):
         mean, log_std = self.net(x).unsqueeze(-1).expand(x.shape[0], 2, self.z_dim).split(1, dim=1)
         mean = mean.squeeze(1)
         log_std = log_std.squeeze(1)
-        print(' encoder x', x)
-        print('net', self.net(x))
         #######################
         # END OF YOUR CODE    #
         #######################
