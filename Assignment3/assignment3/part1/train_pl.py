@@ -93,7 +93,7 @@ class VAE(pl.LightningModule):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        x_samples = self.decoder(torch.normal(0, 1, (batch_size, self.hparams.z_dim)))
+        x_samples = self.decoder(torch.normal(0, 1, (batch_size, self.hparams.z_dim)).to(self.device))
         x_samples = torch.max(x_samples, dim=1, keepdim=True)[1]
         #######################
         # END OF YOUR CODE    #

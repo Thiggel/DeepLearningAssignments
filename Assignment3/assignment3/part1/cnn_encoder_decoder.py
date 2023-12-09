@@ -19,12 +19,6 @@ import torch.nn as nn
 import numpy as np
 
 
-class LogDimensionality(nn.Module):
-    def forward(self, x):
-        print(f"Input shape: {x.shape}")
-        return x
-
-
 class CNNEncoder(nn.Module):
     def __init__(self, num_input_channels: int = 1, num_filters: int = 32,
                  z_dim: int = 20):
@@ -80,6 +74,8 @@ class CNNEncoder(nn.Module):
         mean, log_std = self.net(x).unsqueeze(-1).expand(x.shape[0], 2, self.z_dim).split(1, dim=1)
         mean = mean.squeeze(1)
         log_std = log_std.squeeze(1)
+        print(' encoder x', x)
+        print('net', self.net(x))
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -141,8 +137,6 @@ class CNNDecoder(nn.Module):
         x = self.linear(z)
         x = x.reshape(x.shape[0], -1, 4, 4)
         x = self.net(x)
-        
-        x = ((x + 1.0) / 2.0 * 15).int()
         #######################
         # END OF YOUR CODE    #
         #######################
