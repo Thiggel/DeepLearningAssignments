@@ -77,10 +77,6 @@ class VAE(pl.LightningModule):
         L_reg = KLD(mean, log_std).mean()
         bpd = elbo_to_bpd(L_rec, imgs.shape)
 
-        from torchviz import make_dot
-        graph = make_dot(L_rec, params=dict(self.named_parameters()))
-        graph.render("computation_graph", format="png")
-        exit()
 
         if torch.isnan(L_rec).any().item():
             print('NAN!')
@@ -126,6 +122,12 @@ class VAE(pl.LightningModule):
         self.log("train_regularization_loss", L_reg, on_step=False, on_epoch=True)
         self.log("train_ELBO", L_rec + L_reg, on_step=False, on_epoch=True)
         self.log("train_bpd", bpd, on_step=False, on_epoch=True)
+
+
+        from torchviz import make_dot
+        graph = make_dot(L_rec, params=dict(self.named_parameters()))
+        graph.render("computation_graph", format="png")
+        exit()
 
         return bpd
 
