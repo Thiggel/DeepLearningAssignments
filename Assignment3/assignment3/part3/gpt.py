@@ -90,7 +90,11 @@ class CausalSelfAttention(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        raise NotImplementedError
+        weights = q @ k.transpose(-2, -1) / math.sqrt(n_embd)
+        weights = weights.masked_fill(self.mask[:, :, :seq_len, :seq_len] == 0, float('-inf'))
+        weights = F.softmax(weights, dim=-1)
+        weights = self.attn_dropout(weights)
+        y = weights @ v
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -392,7 +396,27 @@ class GPT(nn.Module):
             #######################
             # PUT YOUR CODE HERE  #
             #######################
-            raise NotImplementedError
+            logits = self(idx_cond)
+            logits = logits[:, -1, :] / temperature
+
+            if top_k is not None:
+                values, indices = torch.topk(logits, top_k)
+                
+                if do_sample:
+                    sampled_idx = torch.multinomial(F.softmax(values, dim=-1), num_samples=1)
+                    idx_next = torch.gather(indices, dim=-1, index=sampled_idx)
+                else:
+                    idx_next = indices[: 0]
+            else:
+                probs = F.softmax(logits, dim=-1)
+
+                if do_sample:
+                    idx_next = torch.multinomial(probs, num_samples=1)
+                else:
+                    idx_next = torch.argmax(probs, dim=-1)
+
+            idx = torch.cat((idx, idx_next), dim=1)
+
             #######################
             # END OF YOUR CODE    #
             #######################
