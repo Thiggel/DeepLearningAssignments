@@ -1,4 +1,4 @@
-################################################################################
+##############################################################################
 # MIT License
 #
 # Copyright (c) 2022
@@ -71,11 +71,19 @@ class VAE(pl.LightningModule):
         # PUT YOUR CODE HERE  #
         #######################
         mean, log_std = self.encoder(imgs)
+        print('mean', mean.shape)
+        print('std', log_std.shape)
         z = sample_reparameterize(mean, log_std.exp())
+        print('samples', z.shape)
+        print(z)
         x_hat = self.decoder(z)
-        L_rec = F.cross_entropy(x_hat, imgs.squeeze(), reduction='sum') / imgs.shape[0]
+        print('x_hat', x_hat.shape)
+        L_rec = -F.cross_entropy(x_hat, imgs.squeeze(), reduction='sum') / imgs.shape[0]
+        print('L_rec', L_rec)
         L_reg = KLD(mean, log_std).mean()
+        print('L_reg', L_reg)
         bpd = elbo_to_bpd(L_rec, imgs.shape)
+        print('bpd',bpd)
 
 
         if torch.isnan(L_rec).any().item():
@@ -103,8 +111,8 @@ class VAE(pl.LightningModule):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        x_samples = self.decoder(torch.normal(0, 1, (batch_size, self.hparams.z_dim)).to(self.device))
-        x_samples = torch.max(x_samples, dim=1, keepdim=True)[1]
+        x_samples = self.decoder(torch.randn((batch_size, self.hparams.z_dim)).to(self.device))
+        x_samples = x_samples.argmax(dim=1, keepdim=True)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -118,16 +126,10 @@ class VAE(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # Make use of the forward function, and add logging statements
         L_rec, L_reg, bpd = self.forward(batch[0])
-        self.log("train_reconstruction_loss", L_rec, on_step=False, on_epoch=True)
+        self.log("train_reconstruction_loss", L_rec, on_step=False, on_epoch=True, prog_bar=True)
         self.log("train_regularization_loss", L_reg, on_step=False, on_epoch=True)
         self.log("train_ELBO", L_rec + L_reg, on_step=False, on_epoch=True)
         self.log("train_bpd", bpd, on_step=False, on_epoch=True)
-
-
-        from torchviz import make_dot
-        graph = make_dot(L_rec, params=dict(self.named_parameters()))
-        graph.render("computation_graph", format="png")
-        exit()
 
         return bpd
 

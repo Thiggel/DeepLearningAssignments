@@ -52,7 +52,7 @@ class CNNEncoder(nn.Module):
             nn.Conv2d(2 * num_filters, 2 * num_filters, kernel_size=3, padding=1, stride=2),  # 7x7 => 4x4
             nn.GELU(),
             nn.Flatten(),  # size is 4x4 x (2xnum_filters)
-            nn.Linear(16 * 2 * num_filters, 2),
+            nn.Linear(16 * 2 * num_filters, 2 * z_dim),
         )
         #######################
         # END OF YOUR CODE    #
@@ -71,9 +71,8 @@ class CNNEncoder(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        mean, log_std = self.net(x).unsqueeze(-1).expand(x.shape[0], 2, self.z_dim).split(1, dim=1)
-        mean = mean.squeeze(1)
-        log_std = log_std.squeeze(1)
+        z = self.net(x)
+        mean, log_std = z.split(z.shape[-1] // 2, dim=-1)
         #######################
         # END OF YOUR CODE    #
         #######################

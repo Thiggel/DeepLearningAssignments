@@ -35,8 +35,8 @@ def sample_reparameterize(mean, std):
     #######################
     # PUT YOUR CODE HERE  #
     #######################
-    z = torch.normal(0., 1., mean.shape).to(mean.device)
-    z = z * std + mean
+    eps = torch.randn(std.shape).to(std.device)
+    z = eps * std + mean
     #######################
     # END OF YOUR CODE    #
     #######################
@@ -58,7 +58,7 @@ def KLD(mean, log_std):
     #######################
     # PUT YOUR CODE HERE  #
     #######################
-    KLD = 0.5 * (torch.exp(2 * log_std) + mean ** 2 - 1 - 2 * log_std).sum(1)
+    KLD = 0.5 * (torch.exp(2 * log_std) + mean ** 2 - 1 - 2 * log_std).sum(-1)
     #######################
     # END OF YOUR CODE    #
     #######################
@@ -77,6 +77,10 @@ def elbo_to_bpd(elbo, img_shape):
     #######################
     # PUT YOUR CODE HERE  #
     #######################
+    if np.prod(img_shape[1:]) == 0:
+        print(np.prod(img_shape[1:]), ' is zero')
+        exit()
+
     bpd = elbo * torch.exp(torch.tensor(1)).log2() / np.prod(img_shape[1:])
     #######################
     # END OF YOUR CODE    #

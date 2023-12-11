@@ -44,7 +44,7 @@ class GPTLightningModule(pl.LightningModule):
 
         # Sample from predictions to calc accuracy
         acc = self.calc_accuracy_from_logits(logits, y)
-        self.log('train_acc', acc, on_epoch=True)
+        self.log('train_acc', acc, on_epoch=True, prog_bar=True)
 
         # Generate some sentences once in a while
         if self.global_step % self.config.generate_every_n_steps == 0:

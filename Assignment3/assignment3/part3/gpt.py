@@ -90,7 +90,7 @@ class CausalSelfAttention(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        weights = q @ k.transpose(-2, -1) / math.sqrt(n_embd)
+        weights = q @ k.transpose(-2, -1) / math.sqrt(k.shape[-1])
         weights = weights.masked_fill(self.mask[:, :, :seq_len, :seq_len] == 0, float('-inf'))
         weights = F.softmax(weights, dim=-1)
         weights = self.attn_dropout(weights)
@@ -406,14 +406,14 @@ class GPT(nn.Module):
                     sampled_idx = torch.multinomial(F.softmax(values, dim=-1), num_samples=1)
                     idx_next = torch.gather(indices, dim=-1, index=sampled_idx)
                 else:
-                    idx_next = indices[: 0]
+                    idx_next = indices[:, 0].unsqueeze(-1)
             else:
                 probs = F.softmax(logits, dim=-1)
 
                 if do_sample:
                     idx_next = torch.multinomial(probs, num_samples=1)
                 else:
-                    idx_next = torch.argmax(probs, dim=-1)
+                    idx_next = torch.argmax(probs, dim=-1).unsqueeze(-1)
 
             idx = torch.cat((idx, idx_next), dim=1)
 
