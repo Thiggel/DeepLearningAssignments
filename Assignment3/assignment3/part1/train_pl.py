@@ -46,6 +46,7 @@ class VAE(pl.LightningModule):
         self.encoder = CNNEncoder(z_dim=z_dim, num_filters=num_filters)
         self.decoder = CNNDecoder(z_dim=z_dim, num_filters=num_filters)
 
+
     def forward(self, imgs):
         """
         The forward function calculates the VAE-loss for a given batch of images.

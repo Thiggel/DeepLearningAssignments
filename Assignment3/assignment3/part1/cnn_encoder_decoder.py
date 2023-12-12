@@ -52,8 +52,10 @@ class CNNEncoder(nn.Module):
             nn.Conv2d(2 * num_filters, 2 * num_filters, kernel_size=3, padding=1, stride=2),  # 7x7 => 4x4
             nn.GELU(),
             nn.Flatten(),  # size is 4x4 x (2xnum_filters)
-            nn.Linear(16 * 2 * num_filters, 2 * z_dim),
         )
+
+        self.fc_mean = nn.Linear(16 * 2 * num_filters, z_dim)
+        self.fc_log_std = nn.Linear(16 * 2 * num_filters, z_dim)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -72,7 +74,8 @@ class CNNEncoder(nn.Module):
         # PUT YOUR CODE HERE  #
         #######################
         z = self.net(x)
-        mean, log_std = z.split(z.shape[-1] // 2, dim=-1)
+        mean = self.fc_mean(z)
+        log_std = self.fc_log_std(z)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -112,7 +115,7 @@ class CNNDecoder(nn.Module):
             nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
             nn.GELU(),
             nn.ConvTranspose2d(num_filters, num_input_channels, kernel_size=3, output_padding=1, padding=1, stride=2), # 14x14 => 28x28
-            nn.Tanh() # The input images is scaled between -1 and 1, hence the output has to be bounded as well
+            #nn.Tanh() # The input images is scaled between -1 and 1, hence the output has to be bounded as well
         )
         #######################
         # END OF YOUR CODE    #
