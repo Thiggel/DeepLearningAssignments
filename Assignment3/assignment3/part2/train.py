@@ -43,7 +43,7 @@ def generate_and_save(model, epoch, summary_writer, batch_size=64):
         batch_size - Number of images to generate/sample
     """
     samples = model.sample(batch_size)
-    grid = make_grid(samples, nrow=8, normalize=True,
+    grid = make_grid(samples.float(), nrow=8, normalize=True,
                      value_range=(-1, 1), pad_value=0.5)
     grid = grid.detach().cpu()
     summary_writer.add_image("samples", grid, global_step=epoch)
@@ -101,7 +101,12 @@ def train_aae(epoch, model, train_loader,
         # PUT YOUR CODE HERE  #
         #######################
         # Encoder-Decoder update
-        raise NotImplementedError
+        optimizer_ae.zero_grad()
+        recon_x, z = model(x)
+        ae_loss, logging_dict_ae = model.get_loss_autoencoder(x, recon_x, z, lambda_)
+        ae_loss.backward()
+        optimizer_ae.step()
+        logger_ae.add_values(logging_dict_ae)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -110,7 +115,11 @@ def train_aae(epoch, model, train_loader,
         # PUT YOUR CODE HERE  #
         #######################
         # Discriminator update
-        raise NotImplementedError
+        optimizer_disc.zero_grad()
+        d_loss, logging_dict_d = model.get_loss_discriminator(z)
+        d_loss.backward()
+        optimizer_disc.step()
+        logger_disc.add_values(logging_dict_d)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -168,8 +177,8 @@ def main(args):
     #######################
     # You can use the Adam optimizer for autoencoder and SGD for discriminator.
     # It is recommended to reduce the momentum (beta1) to e.g. 0.5 for Adam optimizer.
-    optimizer_ae = optim.Adam(model.parameters(), lr=args.lr, betas=(0.5, 0.999))
-    optimizer_disc = optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
+    optimizer_ae = optim.Adam(model.parameters(), lr=args.ae_lr, betas=(0.5, 0.999))
+    optimizer_disc = optim.SGD(model.parameters(), lr=args.d_lr, momentum=0.9)
     #######################
     # END OF YOUR CODE    #
     #######################

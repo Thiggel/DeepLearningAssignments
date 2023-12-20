@@ -20,7 +20,7 @@ import torch.nn.functional as F
 
 
 class ConvEncoder(nn.Module):
-    def __init__(self, z_dim):
+    def __init__(self, z_dim, num_input_channels: int = 1, num_filters: int = 32):
         """
         Convolutional Encoder network with Convolution and Linear layers, ReLU activations. The output layer
         uses a Fully connected layer to embed the representation to a latent code with z_dim dimension.
@@ -78,7 +78,7 @@ class ConvEncoder(nn.Module):
 
 
 class ConvDecoder(nn.Module):
-    def __init__(self, z_dim):
+    def __init__(self, z_dim, num_input_channels: int = 1, num_filters: int = 32):
         """
         Convolutional Decoder network with linear and deconvolution layers and ReLU activations. The output layer
         uses a Tanh activation function to scale the output between -1 and 1.
@@ -123,8 +123,8 @@ class ConvDecoder(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        recon_x  = self.linear(z)
-        recon_x  = x.reshape(x.shape[0], -1, 4, 4)
+        x  = self.linear(z)
+        x  = x.reshape(x.shape[0], -1, 4, 4)
         recon_x = self.net(x)
         #######################
         # END OF YOUR CODE    #
@@ -207,7 +207,7 @@ class AdversarialAE(nn.Module):
         # PUT YOUR CODE HERE  #
         #######################
         z = self.encoder(x)
-        recon_x_ = self.decoder(z)
+        recon_x = self.decoder(z)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -230,11 +230,16 @@ class AdversarialAE(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        ae_loss = None
-        logging_dict = {"gen_loss": None,
-                        "recon_loss": None,
-                        "ae_loss": None}
-        raise NotImplementedError
+        disc_res = self.discriminator(z_fake)
+        recon_loss = F.mse_loss(x, recon_x)
+        print(disc_res, torch.ones(z_fake.shape[0]))
+
+        gen_loss = F.binary_loss_entropy_with_logits(disc_res.log(), torch.ones(z_fake.shape[0]).to(self.device))
+        ae_loss = lambda_ * recon_loss * (1 - lambda_) * gen_loss
+
+        logging_dict = {"gen_loss": gen_loss.item(),
+                        "recon_loss": recon_loss.item(),
+                        "ae_loss": ae_loss.item()}
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -256,12 +261,22 @@ class AdversarialAE(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        disc_loss = None
-        logging_dict = {"disc_loss": None,
-                        "loss_real": None,
-                        "loss_fake": None,
-                        "accuracy": None}
-        raise NotImplementedError
+        disc_fake_output = self.discriminator(z_fake)
+        loss_fake = F.binary_loss_entropy_with_logits((1 - disc_fake_output).log(), torch.ones(z_fake.shape[0]).to(self.device))
+        
+        z_real = torch.rand_like(z_fake)
+        disc_real_output = self.discriminator(z_real)
+        loss_real = F.binary_loss_entropy_with_logits((1 - disc_real_output).log(), torch.ones(z_fake.shape[0]).to(self.device))
+
+        disc_loss = loss_fake + loss_real
+
+        accuracy = 0.5 * (torch.mean((disc_real_output > 0.5).float()) +
+                      torch.mean((disc_fake_output <= 0.5).float()))
+
+        logging_dict = {"disc_loss": disc_loss.item(),
+                        "loss_real": loss_real.item(),
+                        "loss_fake": loss_fake.item(),
+                        "accuracy": accuracy.item()}
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -280,12 +295,12 @@ class AdversarialAE(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        x = None
-        raise NotImplementedError
+        x_samples = self.decoder(torch.randn((batch_size, self.z_dim)).to(self.device))
+        x_samples = x_samples.argmax(dim=1, keepdim=True)
         #######################
         # END OF YOUR CODE    #
         #######################
-        return x
+        return x_samples
 
     @property
     def device(self):
