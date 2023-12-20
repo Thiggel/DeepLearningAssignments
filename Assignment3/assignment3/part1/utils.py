@@ -124,7 +124,7 @@ def visualize_manifold(decoder, grid_size=20):
     img_grid = make_grid(images, nrow=grid_size)
     img_values = torch.arange(0, 16, 1, device=images.device).float().unsqueeze(-1).unsqueeze(-1)
     img_grid = img_grid * img_values
-    img_grid = img_grid.sum(dim=0) / img_values.sum() 
+    img_grid = img_grid.sum(dim=0) / 16.
     #######################
     # END OF YOUR CODE    #
     #######################
