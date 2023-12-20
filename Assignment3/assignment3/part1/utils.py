@@ -109,17 +109,18 @@ def visualize_manifold(decoder, grid_size=20):
     #######################
     # PUT YOUR CODE HERE  #
     #######################
-    percentiles = torch.linspace(0.5 / grid_size, 1.5 - 0.5 / grid_size, steps=grid_size)
-    z_values = torch.distributions.Normal(0, 1).icdf(percentiles)
-
-    z_grid_x, z_grid_y = torch.meshgrid(z_values, z_values)
-    z_grid = torch.stack([z_grid_x.flatten(), z_grid_y.flatten()], dim=1)
-
-    means = F.softmax(decoder(z_grid), dim=1)
-
-    img_grid = make_grid(means.view(-1, 1, 28, 28), nrow=grid_size, normalize=True)
-
-    img_grid = np.transpose(img_grid.cpu().numpy(), (1, 2, 0))
+    percentiles = torch.arange(0.5 / grid_size, (grid_size + 0.5) / grid_size, 1 / grid_size)
+    grid_x, grid_y = torch.meshgrid(percentiles, percentiles)
+    grid = torch.stack((grid_x, grid_y), dim=-1)
+    z_vals = torch.distributions.normal. Normal (torch.zeros (2), torch.ones (2)).icdf(grid).flatten(0, 1)
+    imgs = F.softmax(decoder(z_vals), dim=1)
+    img_grid = make_grid(imgs, nrow=grid_size)
+    # img_grid contains the probabilities of each pixel being a certain value along the C dimension: [B, C, H, W]
+    # We want the mean pixel value, so we calculate the expectation over the C dimension.
+    # To calculate the expectation of a categorical, we multiply the probabilities with the values, sum them up, and
+    # then to get them in the range [0, 1] we divide by 16.
+    img_grid = img_grid * torch.arange(0, 16, 1, device=imgs.device).float().unsqueeze(-1).unsqueeze(-1)
+    img_grid = img_grid.sum(dim=0) / 16.
     #######################
     # END OF YOUR CODE    #
     #######################

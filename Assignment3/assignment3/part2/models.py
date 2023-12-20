@@ -34,7 +34,21 @@ class ConvEncoder(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        raise NotImplementedError
+        self.net = nn.Sequential(
+            nn.Conv2d(num_input_channels, num_filters, kernel_size=3, padding=1, stride=2),  # 28x28 => 14x14
+            nn.GELU(),
+            nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
+            nn.GELU(),
+            nn.Conv2d(num_filters, 2 * num_filters, kernel_size=3, padding=1, stride=2),  # 14x14 => 7x7
+            nn.GELU(),
+            nn.Conv2d(2 * num_filters, 2 * num_filters, kernel_size=3, padding=1),
+            nn.GELU(),
+            nn.Conv2d(2 * num_filters, 2 * num_filters, kernel_size=3, padding=1, stride=2),  # 7x7 => 4x4
+            nn.GELU(),
+            nn.Flatten(),  # size is 4x4 x (2xnum_filters)
+            nn.Linear(16 * 2 * num_filters, z_dim),
+
+        )
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -49,8 +63,7 @@ class ConvEncoder(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        x = None
-        raise NotImplementedError
+        z = self.net(x)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -80,7 +93,22 @@ class ConvDecoder(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        raise NotImplementedError
+        self.linear = nn.Sequential(
+            nn.Linear(z_dim, 2 * 16 * num_filters),
+            nn.GELU()
+        )
+        self.net = nn.Sequential(
+            nn.ConvTranspose2d(2 * num_filters, 2 * num_filters, kernel_size=3, output_padding=0, padding=1, stride=2), # 4x4 => 7x7
+            nn.GELU(),
+            nn.Conv2d(2 * num_filters, 2 * num_filters, kernel_size=3, padding=1),
+            nn.GELU(),
+            nn.ConvTranspose2d(2 * num_filters, num_filters, kernel_size=3, output_padding=1, padding=1, stride=2), # 7x7 => 14x14
+            nn.GELU(),
+            nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
+            nn.GELU(),
+            nn.ConvTranspose2d(num_filters, num_input_channels, kernel_size=3, output_padding=1, padding=1, stride=2), # 14x14 => 28x28
+            #nn.Tanh() # The input images is scaled between -1 and 1, hence the output has to be bounded as well
+        )
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -95,8 +123,9 @@ class ConvDecoder(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        recon_x = None
-        raise NotImplementedError
+        recon_x  = self.linear(z)
+        recon_x  = x.reshape(x.shape[0], -1, 4, 4)
+        recon_x = self.net(x)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -117,7 +146,13 @@ class Discriminator(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        raise NotImplementedError
+        self.net = nn.Sequential(
+            nn.Linear(z_dim, 512),
+            nn.LeakyReLU(0.2),
+            nn.Linear(512, 512),
+            nn.LeakyReLU(0.2),
+            nn.Linear(512, 1),
+        )
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -133,8 +168,7 @@ class Discriminator(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        preds = None
-        raise NotImplementedError
+        preds = self.net(z)
         #######################
         # END OF YOUR CODE    #
         #######################
@@ -172,9 +206,8 @@ class AdversarialAE(nn.Module):
         #######################
         # PUT YOUR CODE HERE  #
         #######################
-        recon_x_ = None
-        z = None
-        raise NotImplementedError
+        z = self.encoder(x)
+        recon_x_ = self.decoder(z)
         #######################
         # END OF YOUR CODE    #
         #######################

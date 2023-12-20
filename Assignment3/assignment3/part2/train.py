@@ -168,9 +168,8 @@ def main(args):
     #######################
     # You can use the Adam optimizer for autoencoder and SGD for discriminator.
     # It is recommended to reduce the momentum (beta1) to e.g. 0.5 for Adam optimizer.
-    optimizer_ae = None
-    optimizer_disc = None
-    raise NotImplementedError
+    optimizer_ae = optim.Adam(model.parameters(), lr=args.lr, betas=(0.5, 0.999))
+    optimizer_disc = optim.SGD(model.parameters(), lr=args.lr, momentum=0.9)
     #######################
     # END OF YOUR CODE    #
     #######################

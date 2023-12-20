@@ -218,7 +218,7 @@ def train_vae(args):
     if args.z_dim == 2:
         img_grid = visualize_manifold(model.decoder)
         save_image(img_grid,
-                   os.path.join(trainer.logger.log_dir, 'vae_manifold.png'),
+                   os.path.join(os.getcwd(),  'vae_manifold.png'),
                    normalize=False)
 
     return test_result
