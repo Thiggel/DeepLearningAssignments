@@ -72,29 +72,13 @@ class VAE(pl.LightningModule):
         # PUT YOUR CODE HERE  #
         #######################
         mean, log_std = self.encoder(imgs)
-        print('mean', mean.shape)
-        print('std', log_std.shape)
         z = sample_reparameterize(mean, log_std.exp())
-        print('samples', z.shape)
-        print(z)
         x_hat = self.decoder(z)
-        print('x_hat', x_hat.shape)
-        L_rec = -F.cross_entropy(x_hat, imgs.squeeze(), reduction='sum') / imgs.shape[0]
-        print('L_rec', L_rec)
+        L_rec = F.cross_entropy(x_hat, imgs.squeeze(), reduction='sum') / imgs.shape[0]
         L_reg = KLD(mean, log_std).mean()
-        print('L_reg', L_reg)
-        bpd = elbo_to_bpd(L_rec, imgs.shape)
-        print('bpd',bpd)
+        elbo = L_rec + L_reg
+        bpd = elbo_to_bpd(elbo, imgs.shape)
 
-
-        if torch.isnan(L_rec).any().item():
-            print('NAN!')
-            print('z', z)
-            print('is_nan x_hat', torch.isnan(x_hat).any().item())
-            print('is_nan imgs', torch.isnan(imgs).any().item())
-            print(imgs.shape)
-            exit()
-                
         #######################
         # END OF YOUR CODE    #
         #######################

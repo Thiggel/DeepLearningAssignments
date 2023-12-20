@@ -15,6 +15,7 @@
 ################################################################################
 
 import torch
+import torch.nn.functional as F
 from torchvision.utils import make_grid
 import numpy as np
 
@@ -77,10 +78,6 @@ def elbo_to_bpd(elbo, img_shape):
     #######################
     # PUT YOUR CODE HERE  #
     #######################
-    if np.prod(img_shape[1:]) == 0:
-        print(np.prod(img_shape[1:]), ' is zero')
-        exit()
-
     bpd = elbo * torch.exp(torch.tensor(1)).log2() / np.prod(img_shape[1:])
     #######################
     # END OF YOUR CODE    #
@@ -112,7 +109,17 @@ def visualize_manifold(decoder, grid_size=20):
     #######################
     # PUT YOUR CODE HERE  #
     #######################
-    img_grid = None
+    percentiles = torch.linspace(0.5 / grid_size, 1.5 - 0.5 / grid_size, steps=grid_size)
+    z_values = torch.distributions.Normal(0, 1).icdf(percentiles)
+
+    z_grid_x, z_grid_y = torch.meshgrid(z_values, z_values)
+    z_grid = torch.stack([z_grid_x.flatten(), z_grid_y.flatten()], dim=1)
+
+    means = F.softmax(decoder(z_grid), dim=1)
+
+    img_grid = make_grid(means.view(-1, 1, 28, 28), nrow=grid_size, normalize=True)
+
+    img_grid = np.transpose(img_grid.cpu().numpy(), (1, 2, 0))
     #######################
     # END OF YOUR CODE    #
     #######################
